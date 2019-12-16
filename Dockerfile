@@ -2,11 +2,8 @@ FROM php:7.3-fpm-alpine
 
 LABEL maintainer="Ngọc Nguyễn <me@ngocnh.info>"
 
-EXPOSE 9990 9000 80
-
+EXPOSE 9000
 WORKDIR /var/www
-
-ADD pm2panel /app/pm2panel
 
 RUN apk --update add --no-cache --virtual build-dependencies \
       build-base openssl-dev autoconf freetype icu make libpng libjpeg-turbo freetype-dev \
@@ -46,8 +43,7 @@ RUN NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
 
 RUN apk del build-dependencies && rm -rf /var/cache/apk/*
 
-RUN apk add nodejs npm
+CMD ["php-fpm"]
 
-RUN npm i -g pm2
 
-CMD pm2 start /app/pm2panel/worker.yml && php-fpm
+
