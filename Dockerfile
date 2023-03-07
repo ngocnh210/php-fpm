@@ -38,12 +38,13 @@ RUN docker-php-ext-install pcntl && \
     docker-php-ext-configure pcntl --enable-pcntl \
 
 # Install PHP Extension intl
-RUN docker-php-ext-install intl&& \
+RUN docker-php-ext-install intl && \
     docker-php-ext-configure intl \
 
 # Install PHP Extension mongodb
 RUN pecl install mongodb && \
-    docker-php-ext-enable mongodb
+    docker-php-ext-enable mongodb && \
+    echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
 
 # Install PHP Extension memcached
 RUN pecl install memcached && \
