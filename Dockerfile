@@ -2,11 +2,12 @@ FROM php:8.2-fpm-alpine
 
 LABEL maintainer="Ngọc Nguyễn <me@ngocnh.info>"
 
-EXPOSE 9990 9000
+EXPOSE 9000
 
 WORKDIR /var/www
 
 RUN apk --update add --no-cache --virtual build-dependencies \
+    coreutils \
     build-base \
     openssl-dev \
     autoconf \
@@ -16,30 +17,33 @@ RUN apk --update add --no-cache --virtual build-dependencies \
     libpng \
     libjpeg-turbo \
     freetype-dev \
-      libmemcached-dev \
+    libmemcached-dev \
     libpng-dev \
     libjpeg-turbo-dev \
     libmcrypt-dev \
     zlib-dev \
     libzip-dev \
     icu-dev \
-    g++
+    g++ \
+    gmp-dev
+
+RUN apk add --update linux-headers nodejs npm composer
 
 # Install PHP Extension bcmath
-RUN docker-php-ext-install bcmath && \
-    docker-php-ext-configure bcmath --enable-bcmath
+RUN docker-php-ext-configure bcmath --enable-bcmath && \
+    docker-php-ext-install bcmath
 
 # Install PHP Extension gd
-RUN docker-php-ext-install gd && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install -j "$(nproc)" gd
 
 # Install PHP Extension pcntl
-RUN docker-php-ext-install pcntl && \
-    docker-php-ext-configure pcntl --enable-pcntl \
+#RUN docker-php-ext-configure pcntl --enable-pcntl &&\
+#    docker-php-ext-install pcntl
 
 # Install PHP Extension intl
-RUN docker-php-ext-install intl && \
-    docker-php-ext-configure intl \
+RUN docker-php-ext-configure intl && \
+    docker-php-ext-install intl
 
 # Install PHP Extension mongodb
 RUN pecl install mongodb && \
@@ -65,17 +69,21 @@ RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install mysqli
 
 # Install PHP Extension pdo_mysql
-RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-configure pdo_mysql && \
+    docker-php-ext-install -j "$(nproc)" pdo_mysql
 
 # Install PHP Extension sockets
 RUN docker-php-ext-install sockets
 
 # Install PHP Extension zip
-RUN docker-php-ext-install zip
+RUN docker-php-ext-configure zip && \
+    docker-php-ext-install -j "$(nproc)" zip \
+
+# Install PHP Extension zip
+RUN docker-php-ext-configure gmp && \
+    docker-php-ext-install -j "$(nproc)" gmp
 
 # Remove Build dependencies & caches
 RUN apk del build-dependencies && rm -rf /var/cache/apk/*
-
-RUN apk add nodejs npm composer
 
 CMD php-fpm
