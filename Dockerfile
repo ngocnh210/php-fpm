@@ -2,7 +2,7 @@ FROM php:8.2-fpm-alpine
 
 LABEL maintainer="Ngọc Nguyễn <me@ngocnh.info>"
 
-EXPOSE 9990 9000 80
+EXPOSE 9990 9000
 
 WORKDIR /var/www
 
@@ -30,7 +30,7 @@ RUN docker-php-ext-install bcmath && \
     docker-php-ext-configure bcmath --enable-bcmath
 
 # Install PHP Extension gd
-RUN docker-php-ext-install -j${NPROC} gd && \
+RUN docker-php-ext-install gd && \
     docker-php-ext-configure gd --with-freetype --with-jpeg
 
 # Install PHP Extension pcntl
