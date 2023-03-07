@@ -77,8 +77,7 @@ RUN docker-php-ext-configure pdo_mysql && \
 RUN docker-php-ext-install sockets
 
 # Install PHP Extension zip
-RUN docker-php-ext-configure zip && \
-    docker-php-ext-install -j "$(nproc)" zip \
+RUN docker-php-ext-install zip \
 
 # Install PHP Extension zip
 RUN docker-php-ext-configure gmp && \
