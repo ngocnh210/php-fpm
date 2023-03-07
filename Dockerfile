@@ -77,11 +77,11 @@ RUN docker-php-ext-configure pdo_mysql && \
 RUN docker-php-ext-install sockets
 
 # Install PHP Extension zip
-RUN docker-php-ext-install -j "$(nproc)" zip \
+#RUN docker-php-ext-install -j "$(nproc)" zip \
 
-# Install PHP Extension zip
-#RUN docker-php-ext-configure gmp && \
-#    docker-php-ext-install -j "$(nproc)" gmp
+# Install PHP Extension gmp
+RUN docker-php-ext-configure gmp && \
+    docker-php-ext-install -j "$(nproc)" gmp
 
 # Remove Build dependencies & caches
 RUN apk del build-dependencies && rm -rf /var/cache/apk/*
