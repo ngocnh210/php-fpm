@@ -25,6 +25,7 @@ RUN apk --update add --no-cache --virtual build-dependencies \
     libzip-dev \
     icu-dev \
     g++ \
+    oniguruma-dev \
     gmp-dev
 
 RUN apk add --update linux-headers nodejs npm composer
@@ -38,8 +39,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j "$(nproc)" gd
 
 # Install PHP Extension pcntl
-#RUN docker-php-ext-configure pcntl --enable-pcntl &&\
-#    docker-php-ext-install pcntl
+RUN docker-php-ext-configure pcntl --enable-pcntl && \
+    docker-php-ext-install pcntl
 
 # Install PHP Extension intl
 RUN docker-php-ext-configure intl && \
